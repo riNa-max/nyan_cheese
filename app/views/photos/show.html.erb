@@ -1,0 +1,22 @@
+<h1>写真詳細</h1>
+
+<p>
+  <%= link_to "← 一覧に戻る", photos_path %>
+</p>
+
+<% if @photo.image.attached? %>
+  <div style="margin: 16px 0;">
+    <%= image_tag url_for(@photo.image), style: "max-width: 720px; width: 100%;" %>
+  </div>
+<% else %>
+  <p>画像がありません。</p>
+<% end %>
+
+<p>投稿日時：<%= l(@photo.created_at, format: :long) %></p>
+
+<hr>
+
+<%= button_to "削除する",
+              photo_path(@photo),
+              method: :delete,
+              data: { confirm: "この写真を削除します。よろしいですか？" } %>

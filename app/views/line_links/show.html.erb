@@ -1,0 +1,21 @@
+<h1>LINE連携</h1>
+
+<% if current_user.line_user_id.present? %>
+  <p>✅ LINE連携済みです。</p>
+  <p>LINEから送った写真は、このアカウントのアルバムに保存されます。</p>
+  <%= link_to "写真一覧へ", photos_path, class: "btn btn-primary" %>
+<% else %>
+  <p>下の連携コードをコピーして、LINEでこのボットに送ってください。</p>
+
+  <h2 style="font-size: 32px; letter-spacing: 2px;">
+    <%= current_user.line_link_token %>
+  </h2>
+
+  <p>送る例：</p>
+  <pre>連携 <%= current_user.line_link_token %></pre>
+
+  <%= button_to "コードを再発行", line_link_path, method: :post %>
+
+  <%= link_to "写真一覧へ", photos_path %>
+<% end %>
+

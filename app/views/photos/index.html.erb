@@ -1,0 +1,15 @@
+<h1>写真一覧</h1>
+
+<% if @photos.empty? %>
+  <p>写真がありません。LINEから写真を送るとここに表示されます。</p>
+<% else %>
+  <ul>
+    <% @photos.each do |photo| %>
+      <% if photo.image.attached? %>
+        <%= link_to photo_path(photo) do %>
+          <%= image_tag photo.image, style: "max-width: 300px;" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>
