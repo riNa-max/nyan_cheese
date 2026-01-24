@@ -3,15 +3,15 @@
     <h2>設定</h2>
 
     <h4 class="mt-3">アカウント情報</h4>
-    <div class="card p-4" style="width: 320px;">
+    <div class="card p-4" style="width: 300px;">
       <p><%= image_tag "user_icon.png", alt: "ユーザーのロゴ", class: "mr-3" %><%= current_user.name %></p>
       <p><%= image_tag "mail_icon.png", alt: "メールのロゴ", class: "mr-3" %><%= current_user.email %></p>
     </div>
+
+    <%= link_to "アカウント情報を編集する", edit_user_registration_path, class: "btn btn-light text-primary mt-3" %>
+
     <div class="mt-3">
       <%=link_to "ログアウト", destroy_user_session_path, method: :delete, class: "btn btn-light text-primary" %>
-    </div>
-    <div class="mt-3">
-      <%= link_to "アカウントを削除する", destroy_user_session_path, method: :delete,data: { confirm: "このアカウントを削除します。よろしいですか？" } , class: "btn btn-light text-danger" %>
     </div>
   </div>
 
