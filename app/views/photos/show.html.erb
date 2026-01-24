@@ -1,22 +1,15 @@
-<h1>写真詳細</h1>
 
-<p>
-  <%= link_to "← 一覧に戻る", photos_path %>
-</p>
+<div class="d-flex justify-content-center mt-5">
+  <div style="width: 300px;">
+    <% if @photo.image.attached? %>
+      <div class="mb-3">
+        <%= image_tag url_for(@photo.image), style: "max-width: 300px; width: 100%;" %>
+      </div>
+    <% else %>
+      <p  class="mb-3">画像がありません。</p>
+    <% end %>
 
-<% if @photo.image.attached? %>
-  <div style="margin: 16px 0;">
-    <%= image_tag url_for(@photo.image), style: "max-width: 720px; width: 100%;" %>
+    <%= link_to "戻る", photos_path, class: "btn btn-light btn-block" %>
+    <%= link_to "削除", photo_path(@photo), method: :delete, data: { confirm: "この写真を削除します。よろしいですか？" } ,class: "btn btn-primary btn-block" %>
   </div>
-<% else %>
-  <p>画像がありません。</p>
-<% end %>
-
-<p>投稿日時：<%= l(@photo.created_at, format: :long) %></p>
-
-<hr>
-
-<%= button_to "削除する",
-              photo_path(@photo),
-              method: :delete,
-              data: { confirm: "この写真を削除します。よろしいですか？" } %>
+</div>

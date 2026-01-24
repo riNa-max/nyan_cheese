@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_01_16_060115) do
+ActiveRecord::Schema.define(version: 2026_01_20_080554) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -61,6 +61,10 @@ ActiveRecord::Schema.define(version: 2026_01_16_060115) do
     t.string "uid"
     t.string "line_link_token"
     t.datetime "line_link_token_generated_at"
+    t.datetime "last_photo_at"
+    t.datetime "last_reminded_at"
+    t.boolean "remind_enabled", default: true, null: false
+    t.integer "remind_after_days", default: 3, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["line_link_token"], name: "index_users_on_line_link_token", unique: true
     t.index ["line_user_id"], name: "index_users_on_line_user_id", unique: true

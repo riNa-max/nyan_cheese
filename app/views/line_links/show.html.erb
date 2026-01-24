@@ -1,21 +1,25 @@
-<h1>LINE連携</h1>
+<div class="line-link-container mx-4 my-4">
 
-<% if current_user.line_user_id.present? %>
-  <p>✅ LINE連携済みです。</p>
-  <p>LINEから送った写真は、このアカウントのアルバムに保存されます。</p>
-  <%= link_to "写真一覧へ", photos_path, class: "btn btn-primary" %>
-<% else %>
-  <p>下の連携コードをコピーして、LINEでこのボットに送ってください。</p>
+  <h2>LINE連携</h2>
 
-  <h2 style="font-size: 32px; letter-spacing: 2px;">
-    <%= current_user.line_link_token %>
-  </h2>
+  <% if current_user.line_user_id.present? %>
+    <p>✅ LINE連携済みです。</p>
+    <p>LINEから送った写真は、このアカウントのアルバムに保存されます。</p>
+    <%= link_to "写真一覧へ", photos_path, class: "btn btn-primary" %>
+  <% else %>
+    <p>1. 下の連携コードをコピーして、LINEでこのボットに送ってください。</p>
 
-  <p>送る例：</p>
-  <pre>連携 <%= current_user.line_link_token %></pre>
+    <h2 style="font-size: 32px; letter-spacing: 2px;">
+      <%= current_user.line_link_token %>
+    </h2>
+    <div class="my-3"> 
+      <%= button_to "コードを再発行", line_link_path, method: :post, class: "btn btn-primary" %>
+    </div>
 
-  <%= button_to "コードを再発行", line_link_path, method: :post %>
+    <p>送る例：</p>
+    <pre>連携 <%= current_user.line_link_token %></pre>
 
-  <%= link_to "写真一覧へ", photos_path %>
-<% end %>
+    <%= link_to "写真一覧へ", photos_path, class: "btn btn-primary" %>
+  <% end %>
 
+</div>

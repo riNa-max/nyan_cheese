@@ -1,15 +1,67 @@
-<h1>写真一覧</h1>
+<div class="container-fluid">
+  <div class="row">
 
-<% if @photos.empty? %>
-  <p>写真がありません。LINEから写真を送るとここに表示されます。</p>
+    <!-- 左サイドバー -->
+    <div class="d-md-none m-2">
+      <button class="btn btn-outline-primary btn-block" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters">
+        絞り込みメニュー
+      </button>
+    </div>
+
+    <aside class="col-md-3 col-lg-2 bg-white border-right min-vh-100 py-4 collapse d-md-block" id="filters">
+      <h6 class="text-muted mb-3">絞り込み</h6>
+
+      <!-- いったん見た目だけ（後で機能化） -->
+      <div class="form-group">
+        <label class="small text-muted">日付</label>
+        <input type="month" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="small text-muted">タグ</label>
+        <select class="form-control">
+          <option>すべて</option>
+        </select>
+      </div>
+
+      <hr>
+
+      <%= link_to "設定へ", settings_path, class: "btn btn-outline-secondary btn-block" %>
+    </aside>
+
+    <!-- 右メイン -->
+    <main class="col-md-9 col-lg-10 min-vh-100 py-4">
+
+      <h4 class="mb-4 text-primary font-weight-bold">写真一覧</h4>
+
+<% if @photos_by_month.blank? %>
+  <div class="alert alert-secondary">
+    写真がありません。LINEから写真を送るとここに表示されます。
+  </div>
 <% else %>
-  <ul>
-    <% @photos.each do |photo| %>
-      <% if photo.image.attached? %>
-        <%= link_to photo_path(photo) do %>
-          <%= image_tag photo.image, style: "max-width: 300px;" %>
-        <% end %>
+  <% @photos_by_month.each do |month, photos| %>
+    <h5 class="mb-3 text-primary font-weight-bold">
+      <%= month.strftime("%Y年%-m月") %>
+    </h5>
+
+    <div class="row mb-4">
+      <% photos.each do |photo| %>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+          <%= link_to photo_path(photo), class: "d-block photo-card" do %>
+            <% if photo.image.attached? %>
+              <%= image_tag photo.image, class: "photo-img" %>
+            <% else %>
+              <div class="photo-placeholder">No Image</div>
+            <% end %>
+          <% end %>
+        </div>
       <% end %>
-    <% end %>
-  </ul>
+    </div>
+  <% end %>
 <% end %>
+
+
+    </main>
+
+  </div>
+</div>

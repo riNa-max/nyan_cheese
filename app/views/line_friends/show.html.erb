@@ -1,35 +1,31 @@
-<h1>LINE友だち追加（写真投稿の準備）</h1>
+<div class="line-friend-container mx-4 my-4">
+  <h2>LINE友だち追加（写真投稿の準備）</h2>
 
-<p>
-  このアプリは、LINEトークで送った写真を自動でアルバムに保存できます。<br>
-  そのために、まずは下のボタン（またはQR）から友だち追加をしてください。
-</p>
+  <p>
+    このアプリは、LINEトークで送った写真を自動でアルバムに保存できます。<br>
+    そのために、まずは下のボタン（またはQR）から友だち追加をしてください。
+  </p>
 
-<hr>
+  <hr>
 
-<h2>1. 友だち追加</h2>
+  <h4>1. 友だち追加</h4>
 
-<!-- 友だち追加リンク（あなたのURLに差し替え） -->
-<p>
-  <a href="<%= ENV.fetch('LINE_FRIEND_ADD_URL', '#') %>" target="_blank" rel="noopener">
-    LINEで友だち追加する
-  </a>
-</p>
+  <!-- QR画像を使う場合（画像を置いたら有効化） -->
+  <%= image_tag "https://qr-official.line.me/gs/M_374uexae_GW.png?oat_content=qr", alt: "LINE友だち追加QR", style: "max-width: 240px;" %>
+  <div>
+    <%= link_to "LINEで友達追加する", ENV.fetch('LINE_FRIEND_ADD_URL', '#'), class: "btn btn-success mt-3" %>
+  </div>
+  <p>
+    ※ボタンが開けない場合は、QRコードで追加してください。
+  </p>
+  <hr>
 
-<!-- QR画像を使う場合（画像を置いたら有効化） -->
-<%= image_tag "https://qr-official.line.me/gs/M_374uexae_GW.png?oat_content=qr", alt: "LINE友だち追加QR", style: "max-width: 240px;" %>
+  <h4>2. 次へ（連携コードの送信）</h4>
+  <p>
+    友だち追加ができたら、次の画面で表示される「連携コード」をLINEに送ってください。
+  </p>
 
-<p style="color:#666;">
-  ※ボタンが開けない場合は、QRコードで追加してください。
-</p>
-
-<hr>
-
-<h2>2. 次へ（連携コードの送信）</h2>
-<p>
-  友だち追加ができたら、次の画面で表示される「連携コード」をLINEに送ってください。
-</p>
-
-<p>
-  <%= link_to "連携コードの画面へ進む", line_link_path %>
-</p>
+  <p>
+    <%= link_to "連携コードの画面へ進む", line_link_path, class: "btn btn-primary" %>
+  </p>
+</div>

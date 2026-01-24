@@ -6,6 +6,6 @@
     devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
     resource :line_link, only: [:show, :create], controller: "line_links"
     resource :line_friend, only: [:show], controller: "line_friends"
-
+    resource :settings, only: [:show, :update]
   end
   

@@ -5,6 +5,7 @@ class PhotosController < ApplicationController
 
   def index
     @photos = current_user.photos.order(created_at: :desc)
+    @photos_by_month = @photos.group_by { |photo| photo.created_at.in_time_zone.to_date.beginning_of_month }
   end
 
   def show

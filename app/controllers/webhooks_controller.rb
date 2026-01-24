@@ -57,34 +57,37 @@ class WebhooksController < ApplicationController
       filename: "line_#{message_id}.jpg",
       content_type: "image/jpeg"
     )
+
+    user.update!(last_photo_at: Time.current)
+
   end
   # ----------------------------
   # メッセージ：送付されたメッセージが連携コードかどうか判定
   # 未連携ユーザーの場合、連携する旨をLINEでリプする
   # ----------------------------
-def handle_text_message(event)
-  text           = event.dig("message", "text").to_s.strip
-  source_user_id = event.dig("source", "userId")
-  reply_token    = event["replyToken"]
+  def handle_text_message(event)
+    text           = event.dig("message", "text").to_s.strip
+    source_user_id = event.dig("source", "userId")
+    reply_token    = event["replyToken"]
 
-  return if text.blank? || source_user_id.blank?
+    return if text.blank? || source_user_id.blank?
 
-  user = User.find_by(line_user_id: source_user_id)
+    user = User.find_by(line_user_id: source_user_id)
 
-  unless user
-    token = text.sub(/^連携\s*/,"").strip
-    linked_user = User.find_by(line_link_token: token)
+    unless user
+      token = text.sub(/^連携\s*/,"").strip
+      linked_user = User.find_by(line_link_token: token)
 
-    if linked_user
-      linked_user.update!(line_user_id: source_user_id)
-      reply_line_message(reply_token, "✅ 連携完了しました！") if reply_token.present?
-    else
-      reply_line_message(reply_token, "⚠️ アプリとLINEを連携してください") if reply_token.present?
+      if linked_user
+        linked_user.update!(line_user_id: source_user_id)
+        reply_line_message(reply_token, "✅ 連携完了しました！") if reply_token.present?
+      else
+        reply_line_message(reply_token, "⚠️ アプリとLINEを連携してください") if reply_token.present?
+      end
+      return
     end
-    return
-  end
 
-end
+  end
 
   # ----------------------------
   # テキストメッセージ：連携コードを受け取って紐付け

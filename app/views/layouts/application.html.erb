@@ -6,27 +6,47 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
 
-    <header>
-      <% if user_signed_in? %>
-        <li>
-          <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
-        </li>
-      <% else %>
-        <li>
-          <%= link_to "ログイン", new_user_session_path %>
-        </li>
-        <li>
-          <%= link_to "新規登録", new_user_registration_path %>
-        </li>
-      <% end %>
-    </header>
+  <header class="text-white">
+    <nav class="navbar bg-primary navbar-expand-lg navbar-dark">
+      <div class="container">
+        <%= link_to "にゃんチーズ", root_path, class: "navbar-brand text-white" %>
 
+        <button class="navbar-toggler" type="button"
+              data-toggle="collapse" data-target="#navbarNavDropdown"
+              aria-controls="navbarNavDropdown" aria-expanded="false"
+              aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav ml-auto">
+            <% if user_signed_in? %>
+              <li class="nav-item"><%= link_to "写真一覧", photos_path, class: "nav-link text-white" %></li>
+              <li class="nav-item"><%= link_to "設定", settings_path, class: "nav-link text-white" %></li>
+            <% else %>
+              <li class="nav-item"><%= link_to "サービス", about_path, class: "nav-link text-white" %></li>
+              <li class="nav-item"><%= link_to "ログイン", new_user_session_path, class: "nav-link text-white" %></li>
+              <li class="nav-item"><%= link_to "新規登録", new_user_registration_path, class: "btn btn-light ml-2 nav-btn" %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+
+  <main>
     <%= yield %>
+  </main>
+
+  <footer>
+  </footer>
+
   </body>
 </html>

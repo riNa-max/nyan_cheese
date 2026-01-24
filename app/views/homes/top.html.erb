@@ -1,1 +1,17 @@
-<h1>トップページ</h1>
+<div class="top-container">
+  <p>猫の日常を「撮り忘れない」ための記録・共有アプリ</p>
+  <h1>にゃんチーズ</h1>
+  <div class="top-logo">
+    <%= image_tag "neko_icon.png", alt: "にゃんチーズのロゴ" %>
+  </div>
+  <div>
+    <btn class="btn btn-primary top-btn">
+      <%= link_to "新規登録", new_user_registration_path%>
+    </btn>
+  </div>
+  <div>
+    <btn class="btn btn-light top-btn">
+      <%= link_to "ログイン", new_user_session_path%>
+    </btn>
+  </div>
+</div>

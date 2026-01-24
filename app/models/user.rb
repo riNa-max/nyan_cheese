@@ -7,6 +7,8 @@ class User < ApplicationRecord
 
   has_many :photos, dependent: :destroy
 
+  validates :remind_after_days, inclusion: { in: [3, 7] }
+
   def generate_line_link_token!
     self.line_link_token = SecureRandom.hex(4) 
     self.line_link_token_generated_at = Time.current

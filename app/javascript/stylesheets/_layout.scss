@@ -1,0 +1,25 @@
+//全体
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  background-color: #BCCDE5;
+}
+p{
+  color:#4B4B4B;
+}
+h4,h2{
+  color:#3F82ED;
+}
+
+//青いボタンの文字色（白）
+.btn-primary a, .btn-success a{
+  color: white;
+}
+
+//ヘッダー
+.nav-item .nav-btn{
+  color: #3F82ED;
+}
