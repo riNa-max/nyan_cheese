@@ -1,0 +1,32 @@
+<div class="container py-4">
+  <h3 class="mb-4">参加中のアルバム</h3>
+
+  <% if @owners.empty? %>
+    <div class="alert alert-light border">
+      まだ参加中のアルバムはありません。<br>
+      共有リンクを受け取ると、ここに表示されます。
+    </div>
+  <% else %>
+    <div class="row">
+      <% @owners.each do |owner| %>
+        <div class="col-md-4 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-2">
+                <%= owner.name.presence || "アルバム" %>
+              </h5>
+
+              <p class="text-muted small mb-3">
+                写真 <%= owner.photos.count %> 枚
+              </p>
+
+              <%= link_to "アルバムを見る",
+                          album_path(owner),
+                          class: "btn btn-outline-primary btn-sm" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -2,6 +2,11 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   def after_sign_in_path_for(resource)
+    #resouceはモデルのインスタンスに相当（=current_user）
+    # まずはdeviseが保存してくれたURLを優先的に取得
+    # それがなければsuperでデフォルトの挙動を呼び出し
+    stored_location_for(resource) || super
+
     return photos_path if resource.line_user_id.present?
     line_friend_path
   end

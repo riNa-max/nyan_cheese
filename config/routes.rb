@@ -7,5 +7,8 @@
     resource :line_link, only: [:show, :create], controller: "line_links"
     resource :line_friend, only: [:show], controller: "line_friends"
     resource :settings, only: [:show, :update]
+    resources :share_links, only: [:index, :create, :destroy]
+    get "/shares/:token", to: "shares#show", as: :"share"
+    resources :albums, only: [:index, :show]
   end
   

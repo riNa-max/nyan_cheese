@@ -9,7 +9,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     user.save!
 
     sign_in(user)
-    redirect_to after_sign_in_path_for(user), notice: "LINEでログインしました"
+    #stored_location_forで保存していたURLにリダイレクト、なければphotos_pathへ
+    redirect_to(stored_location_for(:user) || photos_path, notice: "LINEでログインしました。")
   end
 
   def failure

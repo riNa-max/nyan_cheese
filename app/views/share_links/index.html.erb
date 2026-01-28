@@ -1,0 +1,89 @@
+<div class="container py-4" style="max-width: 900px;">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h3 class="mb-0">共有リンク</h3>
+
+    <%= button_to "共有リンクを発行",
+                  share_links_path,
+                  method: :post,
+                  class: "btn btn-primary" %>
+  </div>
+
+  <p class="text-muted mb-4">
+    発行したリンクを相手に送ると、相手はあなたのアルバム（写真一覧）を閲覧できるようになります。
+  </p>
+
+  <% if @share_links.empty? %>
+    <div class="alert alert-light border">
+      まだ共有リンクがありません。「共有リンクを発行」から作成してください。
+    </div>
+  <% else %>
+    <div class="card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 55%;">リンク</th>
+                <th style="width: 15%;">状態</th>
+                <th style="width: 20%;">発行日時</th>
+                <th style="width: 10%;"></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @share_links.each do |link| %>
+                <tr>
+                  <td>
+                    <% if link.active %>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        value="<%= share_url(link.token) %>"
+                        readonly
+                        onclick="this.select()"
+                      >
+                      <small class="text-muted">
+                        クリックしてコピーしてください
+                      </small>
+                    <% else %>
+                      <span class="text-muted">（無効）</span>
+                    <% end %>
+                  </td>
+
+                  <td>
+                    <% if link.active %>
+                      <span class="badge badge-success">有効</span>
+                    <% else %>
+                      <span class="badge badge-secondary">無効</span>
+                    <% end %>
+                  </td>
+
+                  <td class="text-muted">
+                    <%= link.created_at.in_time_zone.strftime("%Y/%m/%d %H:%M") %>
+                  </td>
+
+                  <td class="text-right">
+                    <% if link.active %>
+                      <%= button_to "無効化",
+                                    share_link_path(link),
+                                    method: :delete,
+                                    data: { confirm: "この共有リンクを無効化しますか？" },
+                                    class: "btn btn-sm btn-outline-danger" %>
+                    <% else %>
+                      <span class="text-muted small">—</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <small class="text-muted d-block mt-3">
+      ※ 無効化したリンクは /shares/:token にアクセスしても使えません（404になります）
+    </small>
+  <% end %>
+</div>
