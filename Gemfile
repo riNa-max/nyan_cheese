@@ -61,9 +61,7 @@ gem "omniauth"
 gem "omniauth-oauth2"
 gem "omniauth-line"
 
-group :development, :test do
-  gem 'dotenv-rails'
-end
+gem 'dotenv-rails'
 
 group :production do
 gem 'mysql2'

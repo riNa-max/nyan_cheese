@@ -5,6 +5,7 @@ class CommentsController < ApplicationController
   before_action :authorize_destroy!, only: [:destroy]
 
   def create
+    #写真に紐づいたコメントを作成
     @comment = @photo.comments.build(comment_params.merge(user: current_user))
 
     if @comment.save
