@@ -1,29 +1,47 @@
 <div class="container py-4">
-  <h3 class="mb-4">参加中のアルバム</h3>
+  <h4 class="mb-4 text-primary font-weight-bold">参加中のアルバム</h4>
 
   <% if @owners.empty? %>
-    <div class="alert alert-light border">
-      まだ参加中のアルバムはありません。<br>
-      共有リンクを受け取ると、ここに表示されます。
+    <div class="alert alert-light border text-center py-4">
+      <p class="mb-1">まだ参加中のアルバムはありません。</p>
+      <small class="text-muted">
+        共有リンクを受け取ると、ここに表示されます。
+      </small>
     </div>
   <% else %>
     <div class="row">
       <% @owners.each do |owner| %>
-        <div class="col-md-4 mb-3">
-          <div class="card h-100">
-            <div class="card-body">
-              <h5 class="card-title mb-2">
+        <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+          <div class="card h-100 shadow-sm">
+
+            <%# --- サムネイル（最新写真があれば表示） --- %>
+            <% if (photo = owner.photos.order(created_at: :desc).first)&.image&.attached? %>
+              <%= image_tag photo.image,
+                    class: "card-img-top",
+                    style: "object-fit: cover; height: 160px;" %>
+            <% else %>
+              <div class="bg-light d-flex align-items-center justify-content-center"
+                   style="height: 160px;">
+                <span class="text-muted small">No Photo</span>
+              </div>
+            <% end %>
+
+            <div class="card-body d-flex flex-column">
+              <h6 class="card-title mb-1 text-truncate">
                 <%= owner.name.presence || "アルバム" %>
-              </h5>
+              </h6>
 
               <p class="text-muted small mb-3">
-                写真 <%= owner.photos.count %> 枚
+                写真 <%= owner.photos.size %> 枚
               </p>
 
-              <%= link_to "アルバムを見る",
-                          album_path(owner),
-                          class: "btn btn-outline-primary btn-sm" %>
+              <div class="mt-auto">
+                <%= link_to "アルバムを見る",
+                            album_path(owner),
+                            class: "btn btn-outline-primary btn-sm btn-block" %>
+              </div>
             </div>
+
           </div>
         </div>
       <% end %>

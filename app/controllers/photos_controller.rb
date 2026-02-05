@@ -9,6 +9,9 @@ class PhotosController < ApplicationController
   end
 
   def show
+    @photo = Photo.find(params[:id])
+    @comment = Comment.new
+    @comments = @photo.comments.includes(:user).order(created_at: :desc)
   end
 
   def destroy

@@ -1,20 +1,12 @@
+<h1>写真詳細</h1>
 
-<div class="d-flex justify-content-center mt-5">
-  <div style="width: 300px;">
-    <% if @photo.image.attached? %>
-      <div class="mb-3">
-        <%= image_tag url_for(@photo.image), style: "max-width: 300px; width: 100%;" %>
-      </div>
-    <% else %>
-      <p  class="mb-3">画像がありません。</p>
-    <% end %>
+<%= image_tag @photo.image.variant(resize_to_limit: [800, 800]) %>
 
-    <%= link_to "戻る", photos_path, class: "btn btn-light btn-block" %>
-    <%= link_to "削除", photo_path(@photo), method: :delete, data: { confirm: "この写真を削除します。よろしいですか？" } ,class: "btn btn-primary btn-block" %>
-  </div>
-</div>
+<hr>
 
-<%= form_with model: [@photo, @comment], local: true do |f| %>
+<h2>コメント</h2>
+
+<%= form_with model: [@owner, @photo, @comment], url: album_photo_comments_path(@owner, @photo), local: true do |f| %>
   <% if @comment.errors.any? %>
     <div class="alert alert-danger">
       <ul class="mb-0">
@@ -42,7 +34,7 @@
 
     <% if user_signed_in? && c.user_id == current_user.id %>
       <div class="mt-2">
-        <%= button_to "削除", photo_comment_path(@photo, c),
+        <%= button_to "削除", album_photo_comment_path(@owner, @photo, c),
               method: :delete,
               data: { turbo_confirm: "削除しますか？" },
               class: "btn btn-sm btn-outline-danger" %>

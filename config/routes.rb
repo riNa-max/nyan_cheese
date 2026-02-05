@@ -1,4 +1,5 @@
   Rails.application.routes.draw do
+  get 'album_photos/show'
     resources :photos, only: [:index, :show, :destroy]
     root to: 'homes#top'
     get '/about', to: 'homes#about', as: 'about'
@@ -9,6 +10,13 @@
     resource :settings, only: [:show, :update]
     resources :share_links, only: [:index, :create, :destroy]
     get "/shares/:token", to: "shares#show", as: :"share"
-    resources :albums, only: [:index, :show]
+    resources :albums, only: [:index,  :show] do
+      resources :photos, only: [:show], controller: "album_photos" do
+        resources :comments, only: [:create, :destroy]
+      end
+    end
+    resources :photos, only: [:show] do
+      resources :comments, only: [:create, :destroy]
+    end
   end
   
