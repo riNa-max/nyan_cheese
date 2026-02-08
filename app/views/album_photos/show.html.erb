@@ -1,44 +1,69 @@
-<h1>写真詳細</h1>
+<div class="container py-4">
+  <div class="row g-4">
 
-<%= image_tag @photo.image.variant(resize_to_limit: [800, 800]) %>
+    <!-- 写真詳細 -->
+    <div class="col-12 col-lg-6 order-1 order-lg-1">
 
-<hr>
-
-<h2>コメント</h2>
-
-<%= form_with model: [@owner, @photo, @comment], url: album_photo_comments_path(@owner, @photo), local: true do |f| %>
-  <% if @comment.errors.any? %>
-    <div class="alert alert-danger">
-      <ul class="mb-0">
-        <% @comment.errors.full_messages.each do |m| %>
-          <li><%= m %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="mb-2">
-    <%= f.text_area :body, rows: 3, class: "form-control", placeholder: "コメントを書く…" %>
-  </div>
-  <%= f.submit "送信", class: "btn btn-primary" %>
-<% end %>
-
-<hr>
-
-<% @comments.each do |c| %>
-  <div class="mb-3 border rounded p-2">
-    <div class="small text-muted">
-      <%= c.user.name.presence || "ユーザー" %> ・ <%= l c.created_at, format: :short %>
-    </div>
-    <div><%= simple_format(h(c.body)) %></div>
-
-    <% if user_signed_in? && c.user_id == current_user.id %>
-      <div class="mt-2">
-        <%= button_to "削除", album_photo_comment_path(@owner, @photo, c),
-              method: :delete,
-              data: { turbo_confirm: "削除しますか？" },
-              class: "btn btn-sm btn-outline-danger" %>
+      <div>
+          <div class="text-center">
+            <%= image_tag @photo.image.variant(resize_to_limit: [800, 800]),
+                  class: "img-fluid rounded",
+                  style: "max-height: 70vh;" %>
+          </div>
       </div>
-    <% end %>
+
+    </div>
+
+    <!-- コメント（入力 + 一覧） -->
+    <div class="col-12 col-lg-6 order-2 order-lg-2 mt-3 mt-lg-0">
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h5 mb-3">コメント</h2>
+
+          <%= form_with model: [@owner, @photo, @comment], url: album_photo_comments_path(@owner, @photo), local: true do |f| %>
+            <% if @comment.errors.any? %>
+              <div class="alert alert-danger">
+                <ul class="mb-0">
+                  <% @comment.errors.full_messages.each do |m| %>
+                    <li><%= m %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-2">
+              <%= f.text_area :body, rows: 3, class: "form-control", placeholder: "コメントを書く…" %>
+            </div>
+            <%= f.submit "送信", class: "btn btn-primary" %>
+          <% end %>
+
+          <hr class="my-4">
+
+          <h2 class="h6 mb-3">コメント一覧</h2>
+
+          <% @comments.each do |c| %>
+            <div class="mb-3 border rounded p-2">
+              <div class="small text-muted">
+                <%= c.user.name.presence || "ユーザー" %> ・ <%= l c.created_at, format: :short %>
+              </div>
+              <div><%= simple_format(h(c.body)) %></div>
+
+              <% if user_signed_in? && c.user_id == current_user.id %>
+                <div class="mt-2">
+                  <%= button_to "削除", album_photo_comment_path(@owner, @photo, c),
+                        method: :delete,
+                        data: { turbo_confirm: "削除しますか？" },
+                        class: "btn btn-sm btn-outline-danger" %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+
+    </div>
+
   </div>
-<% end %>
+</div>

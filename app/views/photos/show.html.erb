@@ -1,52 +1,91 @@
+<div class="container py-4">
+  <div class="row g-4">
 
-<div class="d-flex justify-content-center mt-5">
-  <div style="width: 300px;">
-    <% if @photo.image.attached? %>
-      <div class="mb-3">
-        <%= image_tag url_for(@photo.image), style: "max-width: 300px; width: 100%;" %>
+    <!-- 写真エリア -->
+    <div class="col-12 col-lg-6 order-1 order-lg-1">
+
+      <div>
+        <div class=" text-center">
+
+          <% if @photo.image.attached? %>
+            <div class="mb-3">
+              <%= image_tag url_for(@photo.image),
+                    class: "img-fluid rounded",
+                    style: "max-height: 70vh;" %>
+            </div>
+          <% else %>
+            <p class="mb-3">画像がありません。</p>
+          <% end %>
+
+          <div class="d-grid gap-2">
+            <%= link_to "戻る", photos_path,
+                  class: "btn btn-light" %>
+
+            <%= link_to "削除", photo_path(@photo),
+                  method: :delete,
+                  data: { confirm: "この写真を削除します。よろしいですか？" },
+                  class: "btn btn-danger" %>
+          </div>
+
+        </div>
       </div>
-    <% else %>
-      <p  class="mb-3">画像がありません。</p>
-    <% end %>
 
-    <%= link_to "戻る", photos_path, class: "btn btn-light btn-block" %>
-    <%= link_to "削除", photo_path(@photo), method: :delete, data: { confirm: "この写真を削除します。よろしいですか？" } ,class: "btn btn-primary btn-block" %>
+    </div>
+
+    <!-- コメントエリア -->
+    <div class="col-12 col-lg-6 order-2 order-lg-2 mt-3 mt-lg-0">
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          <h5 class="mb-3">コメント</h5>
+
+          <%= form_with model: [@photo, @comment], local: true do |f| %>
+            <% if @comment.errors.any? %>
+              <div class="alert alert-danger">
+                <ul class="mb-0">
+                  <% @comment.errors.full_messages.each do |m| %>
+                    <li><%= m %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= f.text_area :body, rows: 3,
+                    class: "form-control",
+                    placeholder: "コメントを書く…" %>
+            </div>
+
+            <%= f.submit "送信", class: "btn btn-primary" %>
+          <% end %>
+
+          <hr class="my-4">
+
+          <% @comments.each do |c| %>
+            <div class="mb-3 border rounded p-2">
+              <div class="small text-muted">
+                <%= c.user.name.presence || "ユーザー" %> ・
+                <%= l c.created_at, format: :short %>
+              </div>
+
+              <div><%= simple_format(h(c.body)) %></div>
+
+              <% if user_signed_in? && c.user_id == current_user.id %>
+                <div class="mt-2">
+                  <%= button_to "削除", photo_comment_path(@photo, c),
+                        method: :delete,
+                        data: { turbo_confirm: "削除しますか？" },
+                        class: "btn btn-sm btn-outline-danger" %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </div>
-
-<%= form_with model: [@photo, @comment], local: true do |f| %>
-  <% if @comment.errors.any? %>
-    <div class="alert alert-danger">
-      <ul class="mb-0">
-        <% @comment.errors.full_messages.each do |m| %>
-          <li><%= m %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="mb-2">
-    <%= f.text_area :body, rows: 3, class: "form-control", placeholder: "コメントを書く…" %>
-  </div>
-  <%= f.submit "送信", class: "btn btn-primary" %>
-<% end %>
-
-<hr>
-
-<% @comments.each do |c| %>
-  <div class="mb-3 border rounded p-2">
-    <div class="small text-muted">
-      <%= c.user.name.presence || "ユーザー" %> ・ <%= l c.created_at, format: :short %>
-    </div>
-    <div><%= simple_format(h(c.body)) %></div>
-
-    <% if user_signed_in? && c.user_id == current_user.id %>
-      <div class="mt-2">
-        <%= button_to "削除", photo_comment_path(@photo, c),
-              method: :delete,
-              data: { turbo_confirm: "削除しますか？" },
-              class: "btn btn-sm btn-outline-danger" %>
-      </div>
-    <% end %>
-  </div>
-<% end %>

@@ -6,12 +6,16 @@ class CommentsController < ApplicationController
 
   def create
     #写真に紐づいたコメントを作成
+    #buildメソッドを使用して、current_userをコメントのuser属性に設定
+    #コメントの投稿者を現在ログイン中のユーザーに固定 
     @comment = @photo.comments.build(comment_params.merge(user: current_user))
 
     if @comment.save
       redirect_to after_comment_path, notice: "コメントが投稿されました。"
     else
+      #includes:関連データをまとめて先読みするためのメソッド
       @comments = @photo.comments.includes(:user).order(created_at: :desc)
+      #unprocessable_entity:4エラーメッセージを出力
       render "albun_photos/show", status: :unprocessable_entity
     end
   end
@@ -38,6 +42,7 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
+    #strong parametersを使用して、コメントのbody属性のみを許可
     params.require(:comment).permit(:body)
   end
 

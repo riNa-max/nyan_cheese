@@ -8,28 +8,45 @@
       <p><%= image_tag "mail_icon.png", alt: "メールのロゴ", class: "mr-3" %><%= current_user.email %></p>
     </div>
 
-    <%= link_to "アカウント情報を編集する", edit_user_registration_path, class: "btn btn-light text-primary mt-3" %>
+    <%= link_to "アカウント情報を編集する", edit_user_registration_path, class: "btn btn-light text-primary mt-3", style: "width: 300px;" %>
 
     <div class="mt-3">
-      <%=link_to "ログアウト", destroy_user_session_path, method: :delete, class: "btn btn-light text-danger" %>
+      <%=link_to "ログアウト", destroy_user_session_path, method: :delete, class: "btn btn-light text-danger", style: "width: 300px;" %>
     </div>
   </div>
 
-  <div class="mt-5">
-    <h4>通知設定</h4>
-    <%= form_with model: current_user, url: settings_path, method: :patch, local: true do |f| %>
-      <div style="margin: 12px 0;">
-        <%= f.check_box :remind_enabled %>
-        <%= f.label :remind_enabled, "一定期間以上写真がないときにLINEでリマインドする" %>
-      </div>
+<div class="mt-5">
+  <h4 class="card-title mb-3">通知設定</h4>
+  <div class="card shadow-sm" style="width: 300px;">
+    <div class="card-body">
 
-      <div style="margin: 12px 0;">
-        <%= f.label :remind_after_days, "何日空いたら通知する？" %><br>
-        <%= f.select :remind_after_days,
-               options_for_select([["3日", 3], ["7日", 7]], current_user.remind_after_days) %>
-      </div>
+      
 
-      <%= f.submit "保存する", class: "btn btn-primary mt-3" %>
-    <% end %>
+      <%= form_with model: current_user, url: settings_path, method: :patch, local: true do |f| %>
+
+        <!-- リマインドON/OFF -->
+        <div class="form-check form-switch mb-4">
+          <%= f.check_box :remind_enabled, class: "form-check-input" %>
+          <%= f.label :remind_enabled,
+                "一定期間以上写真がないときにLINEでリマインドする",
+                class: "form-check-label" %>
+        </div>
+
+        <!-- 日数選択 -->
+        <div class="mb-4">
+          <%= f.label :remind_after_days, "何日空いたら通知する？",
+                class: "form-label fw-semibold" %>
+
+          <%= f.select :remind_after_days,
+                options_for_select([["3日", 3], ["7日", 7]], current_user.remind_after_days),
+                {},
+                class: "form-select w-auto" %>
+        </div>
+
+        <%= f.submit "保存する", class: "btn btn-primary px-4" %>
+
+      <% end %>
+
+    </div>
   </div>
 </div>
