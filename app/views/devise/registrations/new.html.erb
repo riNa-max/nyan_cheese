@@ -27,6 +27,10 @@
     </div>
     
     <%= f.submit "新規登録", class: "btn btn-primary btn-block mt-3" %>
+
+    <p class="text-center my-3">または</p>
+
+    <%= link_to "LINEで新規登録", user_line_omniauth_authorize_path, class: "btn btn-success btn-block" %>
   </div>
 </div>
 <% end %>

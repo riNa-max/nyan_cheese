@@ -1,0 +1,11 @@
+<h2>LINEログイン登録</h2>
+
+<p>
+  次にLINEログインを登録します。これにより次回からLINEでアプリにログインできます。
+</p>
+
+<%= form_with url: connect_line_login_path, method: :post do %>
+  <%= submit_tag "LINEログインを登録する", class: "btn btn-success" %>
+<% end %>
+
+

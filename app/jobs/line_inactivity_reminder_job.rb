@@ -2,11 +2,15 @@ class LineInactivityReminderJob < ApplicationJob
   queue_as :default
 
   def perform
+    Rails.logger.info("[REMIND JOB] start at=#{Time.current}")
+    Rails.logger.info("[REMIND JOB] candidates=#{users.count}")
+
     users = User.where.not(line_user_id: nil)
                 .where(remind_enabled: true)
                 .where("last_reminded_at IS NULL OR last_reminded_at < ?", 24.hours.ago)
 
     users.find_each do |user|
+
       days = user.remind_after_days || 3
       threshold = days.days.ago
 

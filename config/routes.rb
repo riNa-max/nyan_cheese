@@ -18,5 +18,7 @@
     resources :photos, only: [:show] do
       resources :comments, only: [:create, :destroy]
     end
+    get  "/line_login/connect", to: "line_logins#new", as: :connect_line_login
+    post "/line_login/connect", to: "line_logins#create"
   end
   

@@ -61,10 +61,7 @@ class WebhooksController < ApplicationController
     user.update!(last_photo_at: Time.current)
 
   end
-  # ----------------------------
-  # メッセージ：送付されたメッセージが連携コードかどうか判定
-  # 未連携ユーザーの場合、連携する旨をLINEでリプする
-  # ----------------------------
+
   def handle_text_message(event)
     text           = event.dig("message", "text").to_s.strip
     source_user_id = event.dig("source", "userId")
@@ -72,55 +69,44 @@ class WebhooksController < ApplicationController
 
     return if text.blank? || source_user_id.blank?
 
-    user = User.find_by(line_user_id: source_user_id)
-
-    unless user
-      token = text.sub(/^連携\s*/,"").strip
-      linked_user = User.find_by(line_link_token: token)
-
-      if linked_user
-        linked_user.update!(line_user_id: source_user_id)
-        reply_line_message(reply_token, "✅ 連携完了しました！") if reply_token.present?
-      else
-        reply_line_message(reply_token, "⚠️ アプリとLINEを連携してください") if reply_token.present?
-      end
+    # すでに連携済みか確認
+    existing = User.find_by(line_user_id: source_user_id)
+    if existing
+      # 既に連携済みなら何もしない（必要なら案内だけ返す）
+      # reply_line_message(reply_token, "✅ すでに連携済みです！") if reply_token.present?
       return
     end
 
-  end
-
-  # ----------------------------
-  # テキストメッセージ：連携コードを受け取って紐付け
-  # 例: "連携 a3f09c1d" or "a3f09c1d"
-  # ----------------------------
-  def handle_text_message(event)
-    text           = event.dig("message", "text").to_s.strip
-    source_user_id = event.dig("source", "userId")
-    reply_token    = event["replyToken"]
-
-    return if text.blank? || source_user_id.blank?
-
+    # 連携コードとして扱う（"連携 " があってもなくてもOK）
     token = text.sub(/^連携\s*/,"").strip
-    return if token.blank?
+    if token.blank?
+      reply_line_message(reply_token, "⚠️ アプリで表示された連携コードを送ってください") if reply_token.present?
+      return
+    end
 
     user = User.find_by(line_link_token: token)
 
     if user
-      user.update!(line_user_id: source_user_id)
-      user.update!(line_link_token: nil, line_link_token_generated_at: nil)
+      # ここで source_user_id を保存して Messaging API と紐付ける
+      user.update!(
+        line_user_id: source_user_id,
+        line_link_token: nil,
+        line_link_token_generated_at: nil
+      )
 
-      reply_line_message(reply_token, "✅ 連携完了しました！これから写真を送るとアルバムに保存されます。") if reply_token.present?
+      reply_line_message(
+        reply_token,
+        "✅ 連携完了しました！これから写真を送るとアルバムに保存されます。"
+      ) if reply_token.present?
     else
       reply_line_message(
         reply_token,
-          "⚠️ 連携コードが見つかりませんでした。\n\n" \
-          "すでにアプリに登録している方は、連携画面でコードを確認してもう一度送ってください。\n" \
-          "まだ登録していない方は、先にアプリ登録をお願いします。\n\n" \
-          "登録後、連携コードを送ると写真が保存されるようになります。"
+        "⚠️ 連携コードが見つかりませんでした。\n\n" \
+        "すでにアプリに登録している方は、連携画面でコードを確認してもう一度送ってください。\n" \
+        "まだ登録していない方は、先にアプリ登録をお願いします。"
       ) if reply_token.present?
     end
   end
-
 
   # ----------------------------
   # LINE APIから画像バイナリ取得

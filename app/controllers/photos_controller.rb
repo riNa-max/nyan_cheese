@@ -2,6 +2,7 @@ class PhotosController < ApplicationController
   before_action :authenticate_user!
   before_action :set_photo, only: [:show, :destroy]
   before_action :authorize_photo!, only: [:destroy]
+  before_action :require_line_linked!
 
   def index
     @photos = current_user.photos.order(created_at: :desc)
@@ -30,4 +31,9 @@ class PhotosController < ApplicationController
     redirect_to photos_path, alert: 'アクセス権限がありません' unless @photo.user == current_user
   end
 
+  def require_line_linked!
+    return if current_user.line_user_id.present?
+    store_location_for(:user, request.fullpath)
+    redirect_to link_line_path, alert: "写真を見るにはLINE連携が必要です"
+  end
 end
