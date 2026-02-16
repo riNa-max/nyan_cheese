@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_02_04_065829) do
+ActiveRecord::Schema.define(version: 2026_02_13_005119) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -60,6 +60,16 @@ ActiveRecord::Schema.define(version: 2026_02_04_065829) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "photo_tags", force: :cascade do |t|
+    t.integer "photo_id", null: false
+    t.integer "tag_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["photo_id", "tag_id"], name: "index_photo_tags_on_photo_id_and_tag_id", unique: true
+    t.index ["photo_id"], name: "index_photo_tags_on_photo_id"
+    t.index ["tag_id"], name: "index_photo_tags_on_tag_id"
+  end
+
   create_table "photos", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -75,6 +85,13 @@ ActiveRecord::Schema.define(version: 2026_02_04_065829) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["owner_id"], name: "index_share_links_on_owner_id"
     t.index ["token"], name: "index_share_links_on_token", unique: true
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -107,6 +124,8 @@ ActiveRecord::Schema.define(version: 2026_02_04_065829) do
   add_foreign_key "album_follows", "users", column: "viewer_id"
   add_foreign_key "comments", "photos"
   add_foreign_key "comments", "users"
+  add_foreign_key "photo_tags", "photos"
+  add_foreign_key "photo_tags", "tags"
   add_foreign_key "photos", "users"
   add_foreign_key "share_links", "users", column: "owner_id"
 end

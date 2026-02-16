@@ -58,6 +58,8 @@ class WebhooksController < ApplicationController
       content_type: "image/jpeg"
     )
 
+    AutoTagPhotoJob.perform_later(photo_id: photo.id) 
+
     user.update!(last_photo_at: Time.current)
 
   end

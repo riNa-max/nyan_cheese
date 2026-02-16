@@ -1,16 +1,19 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def line
-
+    #OmniAuthがLINEから返してくれる情報（provider, uid, etc.）がここに入ってる
     auth = request.env["omniauth.auth"]
 
-    # ★ここが重要：connect判定は request.params じゃなく omniauth.params
+    # connect判定は request.params じゃなく omniauth.params
+    #OAuthで外部に飛んで戻ってくるので、通常のparamsがそのまま残らないことがある
     omniauth_params = request.env["omniauth.params"] || {}
+    #LINEログイン開始URLに ?connect=1 を付けた場合、それが omniauth.params に入る
     connect_mode = omniauth_params["connect"].to_s == "1"
 
     # ====== 既存ユーザーに「LINEログイン登録」するモード ======
     if connect_mode
       # connectは「ログイン中の人だけ」が前提
       unless user_signed_in?
+        #connectは「今ログインしてるアカウントに、LINEログインを追加する」動きなので、未ログインなら弾く
         redirect_to new_user_session_path, alert: "先にログインしてください"
         return
       end
