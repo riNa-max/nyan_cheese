@@ -9,7 +9,7 @@ class VisionRestTagger
   SCOPE    = "https://www.googleapis.com/auth/cloud-platform".freeze
 
   MIN_SCORE  = 0.75
-  MAX_LABELS = 5
+  MAX_LABELS = 10
 
   def initialize(photo)
     @photo = photo

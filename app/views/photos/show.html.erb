@@ -19,7 +19,7 @@
 
           <div class="mt-2">
             <% @photo.tags.each do |tag| %>
-              <span class="badge rounded-pill text-bg-light me-1"><%= "##{tag.name}" %></span>
+              <span class="badge rounded-pill text-bg-light me-1"><%= "##{tag.display_name}" %></span>
             <% end %>
           </div>
 
