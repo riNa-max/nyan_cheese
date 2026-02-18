@@ -5,8 +5,32 @@ class PhotosController < ApplicationController
   before_action :require_line_linked!
 
   def index
-    @photos = current_user.photos.order(created_at: :desc)
+    #パラメータ取得
+    #nil対策で to_s、空白除去で strip
+    @tag = params[:tag].to_s.strip
+    @month = params[:month].to_s.strip
+
+    scope = current_user.photos.includes(:tags).order(created_at: :desc)
+
+    if @month.present?
+      from = Time.zone.parse("#{@month}-01").beginning_of_month
+      to = from.end_of_month
+      scope = scope.where(created_at: from..to)
+    end
+
+    if @tag.present?
+      scope = scope.joins(:tags)
+                  .where("tags.name_ja = ? OR tags.name = ?", @tag, @tag.downcase)
+                  .distinct
+    end
+
+    @photos = scope
     @photos_by_month = @photos.group_by { |photo| photo.created_at.in_time_zone.to_date.beginning_of_month }
+
+    @all_tags = Tag.joins(:photos)
+                  .where(photos: { user_id: current_user.id })
+                  .distinct
+                  .order(:name_ja, :name)
   end
 
   def show

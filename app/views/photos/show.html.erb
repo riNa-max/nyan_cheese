@@ -19,7 +19,9 @@
 
           <div class="mt-2">
             <% @photo.tags.each do |tag| %>
-              <span class="badge rounded-pill text-bg-light me-1"><%= "##{tag.display_name}" %></span>
+              <%= link_to tag.display_name,
+                          photos_path(tag: tag.display_name),
+                          class: "badge bg-light text-dark me-1" %>
             <% end %>
           </div>
 

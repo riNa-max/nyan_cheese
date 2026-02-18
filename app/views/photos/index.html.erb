@@ -11,22 +11,31 @@
     <aside class="col-md-3 col-lg-2 bg-white border-right min-vh-100 py-4 collapse d-md-block" id="filters">
       <h6 class="text-muted mb-3">絞り込み</h6>
 
-      <!-- いったん見た目だけ（後で機能化） -->
+      <%= link_to "絞り込み解除", photos_path, class: "btn btn-sm btn-outline-secondary w-100 mb-3" %>
+
       <div class="form-group">
-        <label class="small text-muted">日付</label>
-        <input type="month" class="form-control">
+        <label class="small text-muted">月</label>
+        <%= form_with url: photos_path, method: :get, local: true do |f| %>
+          <%= hidden_field_tag :tag, @tag if @tag.present? %>
+          <%= month_field_tag :month, @month, class: "form-control" %>
+          <%= submit_tag "月で絞る", class: "btn btn-sm btn-outline-secondary w-100 mt-2" %>
+        <% end %>
       </div>
 
       <div class="form-group">
         <label class="small text-muted">タグ</label>
-        <select class="form-control">
-          <option>すべて</option>
-        </select>
+        <div class="d-flex flex-wrap">
+          <% @all_tags.each do |tag| %>
+            <%= link_to tag.display_name,
+                        photos_path(tag: tag.display_name),
+                        class: "badge me-1 mb-1 #{ @tag == tag.display_name ? 'bg-primary text-dark' : 'bg-light text-dark' }" %>
+          <% end %>
+        </div>
       </div>
 
       <hr>
 
-      <%= link_to "設定へ", settings_path, class: "btn btn-outline-secondary btn-block" %>
+      <%= link_to "設定へ", settings_path, class: "btn btn-secondary btn-block" %>
     </aside>
 
     <!-- 右メイン -->
