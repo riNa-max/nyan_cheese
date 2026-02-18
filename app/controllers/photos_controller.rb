@@ -58,6 +58,6 @@ class PhotosController < ApplicationController
   def require_line_linked!
     return if current_user.line_user_id.present?
     store_location_for(:user, request.fullpath)
-    redirect_to link_line_path, alert: "写真を見るにはLINE連携が必要です"
+    redirect_to line_link_path, alert: "写真を見るにはLINE連携が必要です"
   end
 end
