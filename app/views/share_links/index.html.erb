@@ -1,6 +1,6 @@
 <div class="container py-4" style="max-width: 900px;">
   <div class="d-flex align-items-center justify-content-between mb-3">
-    <h4 class="mb-0 text-primary font-weight-bold">共有リンク</h4>
+    <h5 class="mb-0 text-primary">共有リンクを作成し、アルバムを共有する</h5>
 
     <%= button_to "共有リンクを発行",
                   share_links_path,
@@ -86,4 +86,40 @@
       ※ 無効化したリンクは /shares/:token にアクセスしても使えません（404になります）
     </small>
   <% end %>
+
+  <h5 class="mb-3 text-primary mt-5">共有されたリンクを開いて、アルバムを追加する</h5>
+  <div class="card mt-4">
+    <div class="card-body">
+
+      <div class="form-row align-items-center">
+        <div class="col-sm-9 mb-2">
+          <input id="share_input"
+                 type="text"
+                 class="form-control"
+                 placeholder="共有リンク（URL）を貼り付けてください">
+       </div>
+
+        <div class="col-sm-3 mb-2">
+          <button type="button" class="btn btn-primary btn-block" onclick="openShareLink()">
+            開く
+          </button>
+        </div>
+      </div>
+
+      <small class="text-muted">URLでも token だけでもOKにできます。</small>
+    </div>
+  </div>
+
+  <script>
+    function openShareLink() {
+      const el = document.getElementById("share_input");
+      const input = (el.value || "").trim();
+      if (!input) return;
+
+      // URLが貼られたらそのまま、tokenだけなら /shares/{token} にする
+      const target = input.includes("/") ? input : `/shares/${input}`;
+      window.location.href = target;
+    }
+  </script>
 </div>
+

@@ -21,7 +21,7 @@ class AlbumPhotosController < ApplicationController
   end
 
   def set_photo
-    @photo = @owner.photos.find(params[:id])
+    @photo = @owner.photos.includes(:tags).find(params[:id])
   end
 
 end

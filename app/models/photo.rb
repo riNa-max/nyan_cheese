@@ -4,6 +4,7 @@ class Photo < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :photo_tags, dependent: :destroy
   has_many :tags, through: :photo_tags
+  has_many :notifications, dependent: :destroy
 
   after_commit :enqueue_ai_tagging, on: :create
 

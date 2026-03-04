@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2026_02_16_110030) do
+ActiveRecord::Schema.define(version: 2026_02_24_021259) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -58,6 +58,19 @@ ActiveRecord::Schema.define(version: 2026_02_16_110030) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["photo_id"], name: "index_comments_on_photo_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "photo_id", null: false
+    t.integer "comment_id", null: false
+    t.boolean "read", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["comment_id"], name: "index_notifications_on_comment_id"
+    t.index ["photo_id"], name: "index_notifications_on_photo_id"
+    t.index ["user_id", "photo_id", "read"], name: "index_notifications_on_user_id_and_photo_id_and_read"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "photo_tags", force: :cascade do |t|
@@ -126,6 +139,9 @@ ActiveRecord::Schema.define(version: 2026_02_16_110030) do
   add_foreign_key "album_follows", "users", column: "viewer_id"
   add_foreign_key "comments", "photos"
   add_foreign_key "comments", "users"
+  add_foreign_key "notifications", "comments"
+  add_foreign_key "notifications", "photos"
+  add_foreign_key "notifications", "users"
   add_foreign_key "photo_tags", "photos"
   add_foreign_key "photo_tags", "tags"
   add_foreign_key "photos", "users"

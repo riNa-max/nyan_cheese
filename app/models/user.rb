@@ -22,6 +22,9 @@ class User < ApplicationRecord
 
   has_many :comments, dependent: :destroy
 
+  has_many :notifications, dependent: :destroy
+  has_many :unread_notifications, -> { where(read: false) }, class_name: 'Notification'
+
   def generate_line_link_token!
     self.line_link_token = SecureRandom.hex(4) 
     self.line_link_token_generated_at = Time.current

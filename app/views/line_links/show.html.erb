@@ -4,10 +4,12 @@
 
   <% if current_user.line_user_id.present? %>
     <p>✅ LINE連携済みです。</p>
-    <p>LINEから送った写真は、このアカウントのアルバムに保存されます。</p>
+    <p>LINEから送った写真は、このアカウントの写真一覧に保存されます。</p>
     <%= link_to "写真一覧へ", photos_path, class: "btn btn-primary" %>
   <% else %>
     <p>1. 下の連携コードをコピーして、LINEでこのボットに送ってください。</p>
+    <p>2. LINE連携が完了後「写真一覧へ」ボタンをクリックしてください。</p>
+    <p>※ 連携コードは1回限り有効です。再発行が必要な場合は、再発行ボタンをクリックしてください。</p>
 
     <h2 style="font-size: 32px; letter-spacing: 2px;">
       <%= current_user.line_link_token %>

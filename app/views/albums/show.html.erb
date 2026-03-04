@@ -1,37 +1,75 @@
-<div class="container-fluid py-4">
-  <div class="d-flex align-items-center justify-content-between mb-4">
-    <h3 class="mb-0">
-      <%= @owner.name.presence || "アルバム" %>
-    </h3>
 
-    <%= link_to "一覧に戻る",
-                albums_path,
-                class: "btn btn-outline-secondary btn-sm" %>
-  </div>
 
-  <% if @photos_by_month.empty? %>
-    <div class="alert alert-light border">
-      まだ写真がありません。
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- 左サイドバー -->
+    <div class="d-md-none m-2">
+      <button class="btn btn-outline-primary btn-block" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false" aria-controls="filters">
+        絞り込みメニュー
+      </button>
     </div>
-  <% else %>
-    <% @photos_by_month.each do |month, photos| %>
-      <h5 class="mt-4 mb-3">
-        <%= month.strftime("%Y年%-m月") %>
-      </h5>
+    <aside class="col-md-3 col-lg-2 bg-white border-right min-vh-100 py-4 collapse d-md-block" id="filters">
+      <h6 class="text-muted mb-3">絞り込み</h6>
 
-      <div class="row">
-        <% photos.each do |photo| %>
-          <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
-            <div class="border rounded overflow-hidden">
-              <%= link_to album_photo_path(@owner, photo) do %>
-                <%= image_tag photo.image,
-                              class: "img-fluid",
-                              style: "aspect-ratio: 1 / 1; object-fit: cover;" %>
-              <% end %>
-            </div>
-          </div>
+      <div class="form-group mb-4">
+        <label class="small text-muted">月</label>
+        <%= form_with url: album_path(@owner), method: :get, local: true do %>
+          <%= hidden_field_tag :tag, @tag if @tag.present? %>
+          <%= month_field_tag :month, @month, class: "form-control" %>
+          <%= submit_tag "月で絞る", class: "btn btn-sm btn-outline-secondary w-100 mt-2" %>
         <% end %>
       </div>
-    <% end %>
-  <% end %>
+
+      <div class="form-group mb-3">
+        <label class="small text-muted">タグ</label>
+        <div class="d-flex flex-wrap">
+          <% @all_tags.each do |tag| %>
+            <% label = tag.display_name %>
+            <%= link_to "##{label}",
+                        album_path(@owner, tag: label, month: @month.presence),
+                        class: "badge me-1 #{ @tag == tag.display_name ? 'bg-primary text-dark' : 'bg-light text-dark' }" %>
+          <% end %>
+        </div>
+      </div>
+
+      <%= link_to "絞り込み解除", album_path(@owner), class: "btn btn-sm btn-outline-secondary w-100 mb-3" %>
+
+      <hr>
+
+      <%= link_to "一覧に戻る", albums_path, class: "btn btn-outline-secondary btn-sm w-100" %>
+    </aside>
+
+    <!-- 右メイン -->
+    <main class="col-md-9 col-lg-10 min-vh-100 py-4">
+      <h3 class="mb-0">
+        <%= @owner.name.presence || "アルバム" %>
+      </h3>
+    <% if @photos_by_month.empty? %>
+      <div class="alert alert-light border">
+        まだ写真がありません。
+      </div>
+    <% else %>
+      <% @photos_by_month.each do |month, photos| %>
+        <h5 class="mt-4 mb-3">
+          <%= month.strftime("%Y年%-m月") %>
+        </h5>
+
+        <div class="row">
+          <% photos.each do |photo| %>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
+              <div class="border rounded overflow-hidden">
+                <%= link_to album_photo_path(@owner, photo) do %>
+                  <%= image_tag photo.image,
+                              class: "img-fluid",
+                              style: "aspect-ratio: 1 / 1; object-fit: cover;" %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>           
+    </main>  
+  </div>
 </div>

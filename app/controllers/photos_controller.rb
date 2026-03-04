@@ -31,12 +31,27 @@ class PhotosController < ApplicationController
                   .where(photos: { user_id: current_user.id })
                   .distinct
                   .order(:name_ja, :name)
+
+    photo_ids = @photos.map(&:id)
+    @unread_counts = 
+      if photo_ids.empty?
+        {}
+      else
+        Notification.where(photo_id: photo_ids, user_id: current_user.id, read: false)
+                    .group(:photo_id)
+                    .count
+      end
+
+    Rails.logger.warn("[DEBUG] unread_counts=#{@unread_counts.inspect}")
   end
 
   def show
     @photo = Photo.find(params[:id])
     @comment = Comment.new
     @comments = @photo.comments.includes(:user).order(created_at: :desc)
+
+    Notification.where(photo_id: @photo.id, user_id: current_user.id, read: false)
+                .update_all(read: true)
   end
 
   def destroy
@@ -60,4 +75,6 @@ class PhotosController < ApplicationController
     store_location_for(:user, request.fullpath)
     redirect_to line_link_path, alert: "写真を見るにはLINE連携が必要です"
   end
+
+  
 end

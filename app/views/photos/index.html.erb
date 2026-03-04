@@ -11,8 +11,6 @@
     <aside class="col-md-3 col-lg-2 bg-white border-right min-vh-100 py-4 collapse d-md-block" id="filters">
       <h6 class="text-muted mb-3">絞り込み</h6>
 
-      <%= link_to "絞り込み解除", photos_path, class: "btn btn-sm btn-outline-secondary w-100 mb-3" %>
-
       <div class="form-group">
         <label class="small text-muted">月</label>
         <%= form_with url: photos_path, method: :get, local: true do |f| %>
@@ -33,6 +31,8 @@
         </div>
       </div>
 
+      <%= link_to "絞り込み解除", photos_path, class: "btn btn-sm btn-outline-secondary w-100 mb-3" %>
+
       <hr>
 
       <%= link_to "設定へ", settings_path, class: "btn btn-secondary btn-block" %>
@@ -43,34 +43,44 @@
 
       <h4 class="mb-4 text-primary font-weight-bold">写真一覧</h4>
 
-<% if @photos_by_month.blank? %>
-  <div class="alert alert-secondary">
-    写真がありません。LINEから写真を送るとここに表示されます。
-  </div>
-<% else %>
-  <% @photos_by_month.each do |month, photos| %>
-    <h5 class="mb-3 text-primary font-weight-bold">
-      <%= month.strftime("%Y年%-m月") %>
-    </h5>
-
-    <div class="row mb-4">
-      <% photos.each do |photo| %>
-        <div class="col-6 col-md-4 col-lg-3 mb-4">
-          <%= link_to photo_path(photo), class: "d-block photo-card" do %>
-            <% if photo.image.attached? %>
-              <%= image_tag photo.image, class: "photo-img" %>
-            <% else %>
-              <div class="photo-placeholder">No Image</div>
-            <% end %>
-          <% end %>
+      <% if @photos_by_month.blank? %>
+        <div class="alert alert-secondary">
+          写真がありません。LINEから写真を送るとここに表示されます。
         </div>
+      <% else %>
+        <% @photos_by_month.each do |month, photos| %>
+          <h5 class="mb-3 text-primary font-weight-bold">
+            <%= month.strftime("%Y年%-m月") %>
+          </h5>
+
+          <div class="row mb-4">
+            <% photos.each do |photo| %>
+              <% unread = (@unread_counts && @unread_counts[photo.id]).to_i %>
+
+              <div class="col-6 col-md-4 col-lg-3 mb-4">
+                <div class="photo-tile">
+                  <%= link_to photo_path(photo), class: "d-block photo-card" do %>
+                    <% if photo.image.attached? %>
+                      <%= image_tag photo.image, class: "photo-img" %>
+                    <% else %>
+                      <div class="photo-placeholder">No Image</div>
+                    <% end %>
+                  <% end %>
+
+                  <% unread = (@unread_counts[photo.id]).to_i %>
+                  <% if unread > 0 %>
+                    <span class="unread-badge"><%= unread %></span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       <% end %>
-    </div>
-  <% end %>
-<% end %>
 
 
     </main>
 
   </div>
 </div>
+
