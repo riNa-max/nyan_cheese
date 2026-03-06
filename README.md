@@ -11,6 +11,20 @@
 
 にゃんチーズでは、普段使っている LINE から写真を送るだけで猫の写真と簡単な情報を記録できます。
 また、特定の人だけとアルバムを共有することで、大切な猫の今を、安心して一緒に残すことができます。
+
+### URL
+https://nyan-cheese.com
+
+※デモアカウント  
+email: demo@test.com  
+password: nyandemo
+
+### 主な機能
+・LINEから写真投稿（LINE Messaging API）  
+・写真アルバム管理  
+・アルバム共有機能  
+・AIによる写真タグ付け（Google Cloud Vision API）  
+・一定期間投稿がない場合のリマインド通知 
 ​
 ### ターゲットユーザ
 - 猫の大切な日常を撮り忘れてしまう人
@@ -27,6 +41,16 @@
 <!-- 【補足説明】 -->
 <!-- - テーマ提出時点では不要です。 -->
 <!-- - 当項目には「後ほど作成予定」と記載しましょう。 -->
+
+## 使用技術
+- Ruby on Rails
+- MySQL
+- JavaScript
+- jQuery
+- HTML / CSS
+- LINE Messaging API
+- Google Cloud Vision API
+- AWS（EC2 / RDS / S3）
 ​
 ## 開発環境
 - OS：Windows
