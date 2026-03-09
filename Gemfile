@@ -72,3 +72,5 @@ gem "net-pop"
 gem "net-imap"
 
 gem "googleauth"
+
+gem "aws-sdk-s3", require: false
