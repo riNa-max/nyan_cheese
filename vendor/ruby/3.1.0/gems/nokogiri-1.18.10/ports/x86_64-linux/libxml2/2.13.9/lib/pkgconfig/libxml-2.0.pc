@@ -1,0 +1,12 @@
+prefix=/home/ubuntu/environment/nyan_cheese/vendor/ruby/3.1.0/gems/nokogiri-1.18.10/ports/x86_64-linux/libxml2/2.13.9
+exec_prefix=${prefix}
+libdir=/home/ubuntu/environment/nyan_cheese/vendor/ruby/3.1.0/gems/nokogiri-1.18.10/ports/x86_64-linux/libxml2/2.13.9/lib
+includedir=${prefix}/include
+modules=1
+
+Name: libXML
+Version: 2.13.9
+Description: libXML library version2.
+Requires:  zlib liblzma
+Libs: -L${libdir} -lxml2     -lm   
+Cflags: -I${includedir}/libxml2 
