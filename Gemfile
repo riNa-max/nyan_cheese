@@ -74,3 +74,5 @@ gem "net-imap"
 gem "googleauth"
 
 gem "aws-sdk-s3", require: false
+
+gem "concurrent-ruby", "1.3.4"
