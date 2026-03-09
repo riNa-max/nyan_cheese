@@ -79,7 +79,6 @@ password: nyandemo
 ### インフラ
 - AWS
   - EC2
-  - RDS
   - S3
 
 ### API
