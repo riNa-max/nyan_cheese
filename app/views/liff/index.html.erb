@@ -1,0 +1,60 @@
+<!-- app/views/liff/index.html.erb -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>タグ選択</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>タグ選択</h2>
+
+  <form id="form">
+    <% @tags.each do |tag| %>
+      <label><input type="checkbox" value="<%= tag.name %>"><%= tag.name %></label></br>
+    <% end %>
+
+    <button type="submit">送信</button>
+  </form>
+
+  <script>
+    const LIFF_ID = "<%= ENV['LIFF_ID'] %>";
+
+    async function main() {
+      await liff.init({ liffId: LIFF_ID });
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      }
+    }
+
+    main();
+
+    document.getElementById("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const profile = await liff.getProfile();
+      const userId = profile.userId;
+      const params = new URLSearchParams(window.location.search);
+      const photoId = params.get("photo_id");
+
+      const tags = Array.from(document.querySelectorAll("input:checked"))
+        .map(el => el.value);
+
+      await fetch(`/photos/${photoId}/tags`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          tags: tags
+        })
+      });
+
+      alert("送信しました！");
+      liff.closeWindow();
+    });
+  </script>
+</body>
+</html>

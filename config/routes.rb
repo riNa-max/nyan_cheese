@@ -20,5 +20,6 @@
     end
     get  "/line_login/connect", to: "line_logins#new", as: :connect_line_login
     post "/line_login/connect", to: "line_logins#create"
+    get "/liff", to: "liff#index"
   end
   

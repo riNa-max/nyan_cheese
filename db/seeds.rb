@@ -5,3 +5,12 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+tag_names = %w(
+  上半身
+  寝姿
+)
+
+tag_names.each do |name|
+  Tag.find_or_create_by!(name: name)
+end

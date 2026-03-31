@@ -1,3 +1,5 @@
+
+
 class WebhooksController < ApplicationController
   skip_before_action :verify_authenticity_token
 
@@ -58,7 +60,8 @@ class WebhooksController < ApplicationController
       content_type: "image/jpeg"
     )
 
-    AutoTagPhotoJob.perform_later(photo_id: photo.id) 
+    reply_liff(reply_token, photo)
+    #AutoTagPhotoJob.perform_later(photo_id: photo.id) 
 
     user.update!(last_photo_at: Time.current)
 
@@ -146,6 +149,41 @@ class WebhooksController < ApplicationController
     request.body = {
       replyToken: reply_token,
       messages: [{ type: "text", text: message }]
+    }.to_json
+
+    http.request(request)
+  end
+
+def reply_liff(reply_token, photo)
+    uri = URI("https://api.line.me/v2/bot/message/reply")
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri)
+    request["Content-Type"] = "application/json"
+    request["Authorization"] = "Bearer #{ENV['LINE_CHANNEL_ACCESS_TOKEN']}"
+
+    request.body = {
+      replyToken: reply_token,
+      messages: [
+        {
+          type: "text",
+          text: "タグを選択してください",
+          quickReply: {
+            items: [
+              {
+                type: "action",
+                action: {
+                  type: "uri",
+                  label: "タグ選択",
+                  uri: "https://liff.line.me/#{ENV['LIFF_ID']}?photo_id=#{photo.id}" # ここでLIFF IDとphoto_idを渡す
+                }
+              }
+            ]
+          }
+        }
+      ]
     }.to_json
 
     http.request(request)
