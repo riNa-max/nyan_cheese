@@ -7,8 +7,11 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 tag_names = %w(
+  顔アップ
   上半身
-  寝姿
+  全身
+  横顔
+  後ろ姿
 )
 
 tag_names.each do |name|

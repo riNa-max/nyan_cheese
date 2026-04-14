@@ -1,21 +1,45 @@
-<!-- app/views/liff/index.html.erb -->
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <title>タグ選択</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <!--CDNの読み込みも可能-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
-<body>
-  <h2>タグ選択</h2>
+<body class="container">
+  <h2 class="my-4">この写真のタグを選んで下さい</h2>
+  <p>タグは次の写真を投稿するまでは、ここから再設定可能です。</p>
+  <p>過去の写真のタグはwebアプリから変更可能です。</p>
 
-  <form id="form">
-    <% @tags.each do |tag| %>
-      <label><input type="checkbox" value="<%= tag.name %>"><%= tag.name %></label></br>
-    <% end %>
+  <!-- パラメーターの読み込みに癖があるので、小細工する。(params['liff.state']で入ってくる) -->
+  <% params[:photo_id] = params['liff.state'].split('=').last if params['liff.state'] %>
+  <!-- ここはコントローラーから設定すると２回目のリクエストでチェック済みリストが反応しないので、あえてViewで取る -->
+  <% photo = Photo.find(params[:photo_id]) %>
 
-    <button type="submit">送信</button>
-  </form>
+  <%= form_with model: photo, id: "form", class: "m-2" do |f| %>
+    <div class="card">
+      <div class="card-body">
+        <!-- collection_check_boxesは多対多の更新もRails側でうまくやってくれるので、使いたい -->
+        <%= f.collection_check_boxes(:tag_ids, @tags, :id, :name) do |b| %>
+          <%= b.label class: "me-3" do %>
+            <span class="me-2">
+              <!-- 多対多のアソシエーションを結んでいる場合、登録済みのタグにはチェック済みが入る -->
+              <!-- form_with model: photo の photo 部分が必要だったが、LIFFのJSのせいでViewヘルパーが正しく動かない--> 
+              <%= b.check_box %>
+            </span>
+            <%= b.text %>
+          <% end %>
+        <% end %>
+
+        <%= f.hidden_field :photo_id, value: params[:photo_id] %>
+      </div>
+    </div>
+    <div>
+      <%= f.submit "この内容で送信する", class: "btn btn-outline-secondary w-100 mt-4" %>
+    </div>
+  <% end %>
 
   <script>
     const LIFF_ID = "<%= ENV['LIFF_ID'] %>";
@@ -30,25 +54,36 @@
 
     main();
 
+    // フォームの実際のパラメーターはここで作っている
     document.getElementById("form").addEventListener("submit", async (e) => {
+      //まずRailsのサブミットのリクエストを殺して画面遷移しないようにする
       e.preventDefault();
 
+      // 必要な変数をセット
       const profile = await liff.getProfile();
+      // userIDは現状使っている訳ではない。
       const userId = profile.userId;
       const params = new URLSearchParams(window.location.search);
+      // JS側では問題なくパラメーターが取得できる
       const photoId = params.get("photo_id");
 
+      // タグは投稿時にチェック済みのものをフォームから拾ってタグのidのリストを作る
       const tags = Array.from(document.querySelectorAll("input:checked"))
         .map(el => el.value);
 
+      // リクエスト用のURLを作成
       await fetch(`/photos/${photoId}/tags`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
+        // ここがパラメーター部分なので、Railsのストロングパラメーターに対応する構造を作る
         body: JSON.stringify({
-          user_id: userId,
-          tags: tags
+          photo: {
+            tag_ids: tags
+          },
+          photo_id: photoId,
+          user_id: userId
         })
       });
 
@@ -56,5 +91,5 @@
       liff.closeWindow();
     });
   </script>
-</body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>
